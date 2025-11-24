@@ -1,0 +1,444 @@
+{
+  "categories": [
+    {
+      "id": "1",
+      "name": "World Facts1"
+    },
+    {
+      "id": "55ba",
+      "name": "geopolitics"
+    },
+    {
+      "id": "1cc1",
+      "name": "frontend"
+    }
+  ],
+  "subcategories": [
+    {
+      "id": "1b5e",
+      "name": "social",
+      "categoryId": null,
+      "imageUrl": "https://tse3.mm.bing.net/th/id/OIP.uHaqRdiMzWSMCR2LzsmhtQHaEZ?pid=Api&P=0&h=180",
+      "color": "#62b1ea"
+    },
+    {
+      "id": "1f93",
+      "name": "Science Explorers",
+      "categoryId": "1",
+      "imageUrl": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60",
+      "color": "#FDE68A"
+    },
+    {
+      "id": "24dd",
+      "name": "india",
+      "categoryId": "55ba",
+      "imageUrl": "hhttps://tse3.mm.bing.net/th/id/OIP.uHaqRdiMzWSMCR2LzsmhtQHaEZ?pid=Api&P=0&h=180",
+      "color": "#b0d2e8"
+    },
+    {
+      "id": "ea5d",
+      "name": "html",
+      "categoryId": "1cc1",
+      "imageUrl": "hhttps://tse3.mm.bing.net/th/id/OIP.uHaqRdiMzWSMCR2LzsmhtQHaEZ?pid=Api&P=0&h=180",
+      "color": "#407da5"
+    }
+  ],
+  "questions": [
+    {
+      "id": "05ca",
+      "categoryId": null,
+      "subCategoryId": "1b5e",
+      "level": "medium",
+      "questions": [
+        {
+          "question": "hi",
+          "optionA": "a",
+          "optionB": "b",
+          "optionC": "c",
+          "optionD": "d",
+          "correct": "A"
+        }
+      ]
+    },
+    {
+      "categoryId": null,
+      "subCategoryId": "1b5e",
+      "level": "medium",
+      "questions": [
+        {
+          "question": "hello 123",
+          "optionA": "a",
+          "optionB": "b",
+          "optionC": "c",
+          "optionD": "d",
+          "correct": "C"
+        }
+      ],
+      "id": "dc04"
+    },
+    {
+      "id": "5849",
+      "categoryId": null,
+      "subCategoryId": "1b5e",
+      "level": "medium",
+      "questions": []
+    },
+    {
+      "id": "ef37",
+      "categoryId": null,
+      "subCategoryId": "1b5e",
+      "level": "medium",
+      "questions": []
+    },
+    {
+      "id": "8bf1",
+      "categoryId": null,
+      "subCategoryId": "1b5e",
+      "level": "medium",
+      "questions": []
+    },
+    {
+      "id": "4567",
+      "categoryId": null,
+      "subCategoryId": "1b5e",
+      "level": "easy",
+      "questions": [
+        {
+          "question": "why",
+          "optionA": "a",
+          "optionB": "b",
+          "optionC": "c",
+          "optionD": "d",
+          "correct": "A"
+        }
+      ]
+    },
+    {
+      "id": "3b6d",
+      "categoryId": "55ba",
+      "subCategoryId": "24dd",
+      "level": "medium",
+      "questions": [
+        {
+          "question": "akhila",
+          "optionA": "a",
+          "optionB": "b",
+          "optionC": "c",
+          "optionD": "d",
+          "correct": "B"
+        }
+      ]
+    }
+  ],
+  "quizAttempts": [
+    {
+      "id": "run-001",
+      "userName": "Aisha Khan",
+      "userEmail": "aisha@example.com",
+      "categoryId": null,
+      "subCategoryId": "1b5e",
+      "level": "medium",
+      "score": 7,
+      "totalQuestions": 10,
+      "durationSeconds": 430,
+      "date": "2025-11-18T14:32:00Z",
+      "missedQuestions": [
+        {
+          "questionId": "05ca-q1",
+          "question": "hi"
+        },
+        {
+          "questionId": "dc04-q1",
+          "question": "hello 123"
+        }
+      ]
+    },
+    {
+      "id": "run-002",
+      "userName": "Leo Carter",
+      "userEmail": "leo@example.com",
+      "categoryId": "1",
+      "subCategoryId": "1f93",
+      "level": "easy",
+      "score": 9,
+      "totalQuestions": 10,
+      "durationSeconds": 390,
+      "date": "2025-11-17T09:05:00Z",
+      "missedQuestions": [
+        {
+          "questionId": "05ca-q1",
+          "question": "hi"
+        }
+      ]
+    },
+    {
+      "id": "run-003",
+      "userName": "Priya Verma",
+      "userEmail": "priya@example.com",
+      "categoryId": null,
+      "subCategoryId": "1b5e",
+      "level": "hard",
+      "score": 6,
+      "totalQuestions": 10,
+      "durationSeconds": 520,
+      "date": "2025-11-16T18:10:00Z",
+      "missedQuestions": [
+        {
+          "questionId": "dc04-q1",
+          "question": "hello 123"
+        },
+        {
+          "questionId": "05ca-q1",
+          "question": "hi"
+        },
+        {
+          "questionId": "new-q2",
+          "question": "Capital of France?"
+        }
+      ]
+    },
+    {
+      "id": "8979",
+      "userName": "admin_user",
+      "userEmail": "admin@example.com",
+      "categoryId": null,
+      "subCategoryId": "1b5e",
+      "level": "medium",
+      "score": 1,
+      "totalQuestions": 2,
+      "durationSeconds": 10,
+      "date": "2025-11-22T13:50:37.215Z",
+      "missedQuestions": [
+        {
+          "questionId": "q-1",
+          "question": "hello 123"
+        }
+      ]
+    },
+    {
+      "id": "fcde",
+      "userName": "john",
+      "userEmail": "john@example.com",
+      "categoryId": "11",
+      "subCategoryId": null,
+      "level": "easy",
+      "score": 4,
+      "totalQuestions": 10,
+      "durationSeconds": 29,
+      "date": "2025-11-22T13:56:04.088Z",
+      "missedQuestions": [
+        {
+          "questionId": "q-0",
+          "question": "In which film does Humphrey Bogart say the famous line, \"Here's looking at you, kid\"?"
+        },
+        {
+          "questionId": "q-1",
+          "question": "Which movie includes a giant bunny-like spirit who has magic powers including growing trees?"
+        },
+        {
+          "questionId": "q-2",
+          "question": "What is the orange and white bot's name in \"Star Wars: The Force Awakens\"?"
+        },
+        {
+          "questionId": "q-4",
+          "question": "What breed of dog was Marley in the film \"Marley & Me\" (2008)?"
+        },
+        {
+          "questionId": "q-7",
+          "question": "What was the first monster to appear alongside Godzilla?"
+        },
+        {
+          "questionId": "q-9",
+          "question": "Which actor plays Obi-Wan Kenobi in Star Wars Episodes I-III?"
+        }
+      ]
+    },
+    {
+      "id": "930c",
+      "userName": "john",
+      "userEmail": "john@example.com",
+      "categoryId": "22",
+      "subCategoryId": null,
+      "level": "hard",
+      "score": 3,
+      "totalQuestions": 10,
+      "durationSeconds": 26,
+      "date": "2025-11-22T13:57:09.734Z",
+      "missedQuestions": [
+        {
+          "questionId": "q-0",
+          "question": "Where is the fast food chain \"Panda Express\" headquartered?"
+        },
+        {
+          "questionId": "q-4",
+          "question": "The mountainous Khyber Pass connects which of the two following countries?"
+        },
+        {
+          "questionId": "q-5",
+          "question": "Which country was NOT formerly part of Yugoslavia?"
+        },
+        {
+          "questionId": "q-6",
+          "question": "What is Canada's largest island?"
+        },
+        {
+          "questionId": "q-7",
+          "question": "What is the area of Vatican City?"
+        },
+        {
+          "questionId": "q-8",
+          "question": "How many countries border Kyrgyzstan?"
+        },
+        {
+          "questionId": "q-9",
+          "question": "Which of these cities has a 4° East longitude. "
+        }
+      ]
+    },
+    {
+      "id": "c70e",
+      "userName": "Asritha Asritha",
+      "userEmail": "asritha1125@gmail.com",
+      "categoryId": "17",
+      "subCategoryId": null,
+      "level": "easy",
+      "score": 2,
+      "totalQuestions": 10,
+      "durationSeconds": 12,
+      "date": "2025-11-24T08:55:12.348Z",
+      "missedQuestions": [
+        {
+          "questionId": "q-2",
+          "question": "The medical term for the belly button is which of the following?"
+        },
+        {
+          "questionId": "q-3",
+          "question": "What is the standard SI unit for time?"
+        },
+        {
+          "questionId": "q-4",
+          "question": "What is the standard SI unit for temperature?"
+        },
+        {
+          "questionId": "q-5",
+          "question": "The human heart has how many chambers?"
+        },
+        {
+          "questionId": "q-6",
+          "question": "How many planets are in our Solar System?"
+        },
+        {
+          "questionId": "q-7",
+          "question": "What animal takes part in Schrödinger's most famous thought experiment?"
+        },
+        {
+          "questionId": "q-8",
+          "question": "Which noble gas has the lowest atomic number?"
+        },
+        {
+          "questionId": "q-9",
+          "question": "This element, when overcome with extreme heat and pressure, creates diamonds."
+        }
+      ]
+    },
+    {
+      "id": "4017",
+      "userName": "Asritha Asritha",
+      "userEmail": "asritha1125@gmail.com",
+      "categoryId": "55ba",
+      "subCategoryId": "24dd",
+      "level": "medium",
+      "score": 0,
+      "totalQuestions": 1,
+      "durationSeconds": 4,
+      "date": "2025-11-24T09:05:36.128Z",
+      "missedQuestions": [
+        {
+          "questionId": "q-0",
+          "question": "akhila"
+        }
+      ]
+    },
+    {
+      "id": "ed95",
+      "userName": "Asritha Asritha",
+      "userEmail": "asritha1125@gmail.com",
+      "categoryId": "18",
+      "subCategoryId": null,
+      "level": "easy",
+      "score": 1,
+      "totalQuestions": 10,
+      "durationSeconds": 13,
+      "date": "2025-11-24T09:17:24.021Z",
+      "missedQuestions": [
+        {
+          "questionId": "q-1",
+          "question": "According to the International System of Units, how many bytes are in a kilobyte of RAM?"
+        },
+        {
+          "questionId": "q-2",
+          "question": "In the programming language Java, which of these keywords would you put on a variable to make sure it doesn't get modified?"
+        },
+        {
+          "questionId": "q-3",
+          "question": "What programming language was GitHub written in?"
+        },
+        {
+          "questionId": "q-4",
+          "question": "The series of the Intel HD graphics generation succeeding that of the 5000 and 6000 series (Broadwell) is called:"
+        },
+        {
+          "questionId": "q-5",
+          "question": "Which programming language shares its name with an island in Indonesia?"
+        },
+        {
+          "questionId": "q-6",
+          "question": "What does the \"MP\" stand for in MP3?"
+        },
+        {
+          "questionId": "q-7",
+          "question": "In web design, what does CSS stand for?"
+        },
+        {
+          "questionId": "q-8",
+          "question": "What does CPU stand for?"
+        },
+        {
+          "questionId": "q-9",
+          "question": "If you were to code software in this language you'd only be able to type 0's and 1's."
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "8d3e",
+      "name": "Asritha",
+      "email": "asritha276cloud@gmail.com",
+      "googleId": "112441023790446765831",
+      "password": ""
+    },
+    {
+      "id": "11bd",
+      "name": "admin_user",
+      "email": "admin@example.com",
+      "password": "123456",
+      "role": "admin"
+    },
+    {
+      "id": "ae11",
+      "name": "Asritha Asritha",
+      "email": "asritha1125@gmail.com",
+      "googleId": "111065758582351080239",
+      "password": "",
+      "role": "user"
+    },
+    {
+      "id": "f13c",
+      "name": "john",
+      "email": "john@example.com",
+      "password": "123789",
+      "role": "user"
+    }
+  ]
+}
