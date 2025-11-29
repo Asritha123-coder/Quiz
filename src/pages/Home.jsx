@@ -693,9 +693,9 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Popular Quizzes Section */}
+      {/* Popular Quizzes Section with Marquee */}
       {categories.length > 0 && (
-        <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-blue-50">
+        <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-blue-50 overflow-hidden">
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -704,40 +704,76 @@ const Home = () => {
               <p className="text-xl text-gray-600">Try these trending categories</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {categories.map((sub, index) => (
-                <div
-                  key={sub.id}
-                  onClick={() => navigate(`/Difficulty/local-${sub.id}`, {
-                    state: {
-                      customMeta: {
-                        categoryName: "Popular",
-                        subcategoryName: sub.name,
-                        subCategoryId: sub.id,
-                        categoryId: sub.categoryId,
+            {/* Marquee Container */}
+            <div className="relative overflow-hidden">
+              <div className="flex animate-marquee gap-6">
+                {/* First set of items */}
+                {categories.map((sub, index) => (
+                  <div
+                    key={`first-${sub.id}`}
+                    onClick={() => navigate(`/Difficulty/local-${sub.id}`, {
+                      state: {
+                        customMeta: {
+                          categoryName: "Popular",
+                          subcategoryName: sub.name,
+                          subCategoryId: sub.id,
+                          categoryId: sub.categoryId,
+                        },
                       },
-                    },
-                  })}
-                  className="group p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 cursor-pointer"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  {sub.imageUrl && (
-                    <div className="w-full h-40 rounded-xl overflow-hidden mb-4">
-                      <img
-                        src={sub.imageUrl}
-                        alt={sub.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
+                    })}
+                    className="group flex-shrink-0 w-80 p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 cursor-pointer"
+                  >
+                    {sub.imageUrl && (
+                      <div className="w-full h-40 rounded-xl overflow-hidden mb-4">
+                        <img
+                          src={sub.imageUrl}
+                          alt={sub.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{sub.name}</h3>
+                    <p className="text-gray-600 text-sm mb-4">Click to start quiz</p>
+                    <div className="flex items-center text-blue-600 font-medium group-hover:gap-2 transition-all">
+                      Start Quiz
+                      <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                     </div>
-                  )}
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{sub.name}</h3>
-                  <p className="text-gray-600 text-sm mb-4">Click to start quiz</p>
-                  <div className="flex items-center text-blue-600 font-medium group-hover:gap-2 transition-all">
-                    Start Quiz
-                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </div>
-                </div>
-              ))}
+                ))}
+                {/* Duplicate set for seamless loop */}
+                {categories.map((sub, index) => (
+                  <div
+                    key={`second-${sub.id}`}
+                    onClick={() => navigate(`/Difficulty/local-${sub.id}`, {
+                      state: {
+                        customMeta: {
+                          categoryName: "Popular",
+                          subcategoryName: sub.name,
+                          subCategoryId: sub.id,
+                          categoryId: sub.categoryId,
+                        },
+                      },
+                    })}
+                    className="group flex-shrink-0 w-80 p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 cursor-pointer"
+                  >
+                    {sub.imageUrl && (
+                      <div className="w-full h-40 rounded-xl overflow-hidden mb-4">
+                        <img
+                          src={sub.imageUrl}
+                          alt={sub.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{sub.name}</h3>
+                    <p className="text-gray-600 text-sm mb-4">Click to start quiz</p>
+                    <div className="flex items-center text-blue-600 font-medium group-hover:gap-2 transition-all">
+                      Start Quiz
+                      <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="text-center mt-12">
@@ -753,10 +789,10 @@ const Home = () => {
         </section>
       )}
 
-      {/* CTA Section */}
-      <section className="py-20 px-4">
+      {/* Footer - Ready to Start Section */}
+      <footer className="py-16 px-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
         <div className="container mx-auto max-w-4xl">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-center text-white shadow-2xl">
+          <div className="text-center">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">Ready to Start?</h2>
             <p className="text-xl mb-8 opacity-90">
               Join thousands of players testing their knowledge every day
@@ -769,8 +805,28 @@ const Home = () => {
               Get Started Now
             </Link>
           </div>
+          
+          {/* Footer Links */}
+          <div className="mt-12 pt-8 border-t border-gray-700">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="text-sm text-gray-400">
+                © 2024 TriviaTrek. All rights reserved.
+              </div>
+              <div className="flex gap-6">
+                <Link to="/about" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  About
+                </Link>
+                <Link to="/Category" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  Categories
+                </Link>
+                <Link to="/leaderboard" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  Leaderboard
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
+      </footer>
 
       <style>{`
         @keyframes fadeIn {
@@ -788,6 +844,20 @@ const Home = () => {
         }
         .delay-1000 {
           animation-delay: 1s;
+        }
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-marquee {
+          animation: marquee 30s linear infinite;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
         }
       `}</style>
     </div>

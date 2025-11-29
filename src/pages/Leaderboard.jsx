@@ -123,16 +123,16 @@ const Leaderboard = () => {
   }, [filteredAttempts]);
 
   const getRankIcon = (rank) => {
-    if (rank === 1) return <Trophy className="text-yellow-500" size={24} />;
-    if (rank === 2) return <Medal className="text-gray-400" size={24} />;
-    if (rank === 3) return <Award className="text-amber-600" size={24} />;
+    if (rank === 1) return <Trophy className="text-yellow-400" size={24} />;
+    if (rank === 2) return <Medal className="text-blue-400" size={24} />;
+    if (rank === 3) return <Award className="text-orange-500" size={24} />;
     return <span className="text-gray-500 font-bold">#{rank}</span>;
   };
 
   const getRankBadgeColor = (rank) => {
-    if (rank === 1) return "bg-gradient-to-r from-yellow-400 to-yellow-600";
-    if (rank === 2) return "bg-gradient-to-r from-gray-300 to-gray-500";
-    if (rank === 3) return "bg-gradient-to-r from-amber-500 to-amber-700";
+    if (rank === 1) return "bg-gradient-to-r from-yellow-300 to-yellow-500";
+    if (rank === 2) return "bg-gradient-to-r from-blue-300 to-blue-500";
+    if (rank === 3) return "bg-gradient-to-r from-orange-400 to-orange-600";
     return "bg-gradient-to-r from-blue-500 to-indigo-600";
   };
 
@@ -216,26 +216,26 @@ const Leaderboard = () => {
               return (
                 <div
                   key={player.userEmail || player.userName}
-                  className={`relative rounded-2xl shadow-xl p-6 text-center transform transition-all hover:scale-105 ${
+                  className={`relative rounded-2xl shadow-xl text-center transform transition-all hover:scale-105 ${
                     rank === 1
-                      ? "bg-gradient-to-br from-yellow-400 to-yellow-600 text-white md:-mt-8"
+                      ? "bg-gradient-to-br from-yellow-300 to-yellow-500 text-white md:-mt-8 p-4"
                       : rank === 2
-                      ? "bg-gradient-to-br from-gray-300 to-gray-500 text-white"
-                      : "bg-gradient-to-br from-amber-500 to-amber-700 text-white"
+                      ? "bg-gradient-to-br from-blue-300 to-blue-500 text-white p-6"
+                      : "bg-gradient-to-br from-orange-400 to-orange-600 text-white p-6"
                   }`}
                 >
-                  <div className="absolute top-4 right-4">
+                  <div className={`absolute ${rank === 1 ? 'top-2 right-2' : 'top-4 right-4'}`}>
                     {getRankIcon(rank)}
                   </div>
-                  <div className="w-20 h-20 bg-white/20 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold">
+                  <div className={`${rank === 1 ? 'w-16 h-16 text-2xl mb-3' : 'w-20 h-20 text-3xl mb-4'} bg-white/20 rounded-full mx-auto flex items-center justify-center font-bold`}>
                     {player.userName?.[0]?.toUpperCase() || "?"}
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{player.userName}</h3>
+                  <h3 className={`${rank === 1 ? 'text-lg' : 'text-xl'} font-bold mb-2`}>{player.userName}</h3>
                   <p className="text-sm opacity-90 mb-4">{player.userEmail}</p>
                   <div className="space-y-2">
                     <div className="flex items-center justify-center gap-2">
                       <Target size={18} />
-                      <span className="text-2xl font-bold">{player.bestAccuracy.toFixed(1)}%</span>
+                      <span className={`${rank === 1 ? 'text-xl' : 'text-2xl'} font-bold`}>{player.bestAccuracy.toFixed(1)}%</span>
                     </div>
                     <p className="text-sm opacity-90">Best Accuracy</p>
                     <div className="flex items-center justify-center gap-2 mt-3">
