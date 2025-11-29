@@ -2,6 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import Sidebar from "../components/Sidebar";
+import CategoryCard from "../components/CategoryCard";
 
 const categoryGroups = {
   "General Knowledge": [9],
@@ -10,23 +13,23 @@ const categoryGroups = {
   "Other Topics": [20, 21, 22, 23],
 };
 
-// FIXED COLOR MAP
-const pastelMap = {
-  9: "bg-blue-100",
-  10: "bg-pink-100",
-  11: "bg-yellow-100",
-  12: "bg-purple-100",
-  13: "bg-red-100",
-  14: "bg-green-100",
-  15: "bg-indigo-100",
-  16: "bg-teal-100",
-  17: "bg-orange-100",
-  18: "bg-rose-100",
-  19: "bg-lime-100",
-  20: "bg-sky-100",
-  21: "bg-violet-100",
-  22: "bg-amber-100",
-  23: "bg-cyan-100",
+// Pastel color map with exact hex values matching Mentimeter
+const pastelColorMap = {
+  9: "#e8f1ff",   // blue
+  10: "#fde8f3",  // pink
+  11: "#fff9cc",  // yellow
+  12: "#f0e8ff",  // purple
+  13: "#e8f1ff",  // blue
+  14: "#fde8f3",  // pink
+  15: "#fff9cc",  // yellow
+  16: "#f0e8ff",  // purple
+  17: "#e8f1ff",  // blue
+  18: "#fde8f3",  // pink
+  19: "#fff9cc",  // yellow
+  20: "#f0e8ff",  // purple
+  21: "#e8f1ff",  // blue
+  22: "#fde8f3",  // pink
+  23: "#fff9cc",  // yellow
 };
 
 // IMAGE MAP
@@ -57,58 +60,9 @@ const Category = () => {
   const [localSubcategories, setLocalSubcategories] = useState([]);
   const [customLoading, setCustomLoading] = useState(true);
   const [customError, setCustomError] = useState("");
-  const [search, setSearch] = useState("");
   const [expandedGroups, setExpandedGroups] = useState({});
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
-
-  // Motion variants for subtle, polished animations
-  const pageVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: "easeOut" },
-    },
-  };
-
-  const groupVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (i) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.45,
-        ease: "easeOut",
-        delay: 0.05 * i,
-      },
-    }),
-  };
-
-  const cardContainerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.06,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const cardVariants = {
-    // Slide in from the side with fade
-    hidden: { opacity: 0, x: -40 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 180,
-        damping: 22,
-      },
-    },
-  };
 
   useEffect(() => {
     let active = true;
@@ -156,356 +110,357 @@ const Category = () => {
   }, []);
 
   const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    return categories.filter((cat) => cat.name.toLowerCase().includes(q));
-  }, [categories, search]);
+    return categories;
+  }, [categories]);
 
   const localCollections = useMemo(() => {
-    const q = search.trim().toLowerCase();
-
     return localCategories
       .map((cat) => {
         const allSubs = localSubcategories.filter(
           (sub) => sub.categoryId === cat.id
         );
-        if (!q) return { ...cat, subcategories: allSubs };
-
-        const catMatches = cat.name.toLowerCase().includes(q);
-        if (catMatches) return { ...cat, subcategories: allSubs };
-
-        const subsMatching = allSubs.filter((sub) =>
-          sub.name.toLowerCase().includes(q)
-        );
-        if (subsMatching.length) return { ...cat, subcategories: subsMatching };
-
-        return null;
+        return { ...cat, subcategories: allSubs };
       })
       .filter(Boolean);
-  }, [localCategories, localSubcategories, search]);
+  }, [localCategories, localSubcategories]);
 
-  // Featured categories (simple pick from filtered list)
+  // Featured categories
   const featuredCategories = useMemo(
-    () => filtered.slice(0, 3),
+    () => filtered.slice(0, 2),
     [filtered]
   );
 
   return (
-    <motion.div
-      className="min-h-screen bg-[#F7F3F0]"
-      variants={pageVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <div className="min-h-screen bg-white">
       {/* Mobile Menu Button */}
       <button
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md border border-gray-200"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-white rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition-colors"
+        aria-label="Toggle menu"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        <svg
+          className="w-6 h-6 text-gray-700"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16M4 18h16"
+          />
         </svg>
       </button>
 
-      {/* Mobile Sidebar Overlay */}
-      {mobileMenuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
+      {/* Hero Section */}
+      <section className="relative w-full overflow-hidden bg-[#e8f1ff] py-20 md:py-24">
+        {/* Curved Shapes */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Light Blue Left Shape */}
+          <div className="absolute -left-32 -top-32 w-96 h-96 bg-blue-200/40 rounded-full blur-3xl"></div>
+          <div className="absolute left-0 top-0 w-80 h-80 bg-blue-300/30 rounded-full blur-2xl"></div>
+          
+          {/* Pink Right Shape */}
+          <div className="absolute -right-32 -top-32 w-96 h-96 bg-pink-200/40 rounded-full blur-3xl"></div>
+          <div className="absolute right-0 top-0 w-80 h-80 bg-pink-300/30 rounded-full blur-2xl"></div>
+        </div>
 
-      <div className="flex">
-        {/* Sticky Left Sidebar - Fixed Width */}
-        <aside className={`${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:sticky top-0 left-0 z-40 w-[260px] h-screen overflow-y-auto bg-white border-r border-gray-200 px-6 py-8 transition-transform duration-300`}>
-          {/* Close button for mobile */}
-          <button
-            onClick={() => setMobileMenuOpen(false)}
-            className="lg:hidden absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-
-          <nav className="space-y-1">
-            <button
-              type="button"
-              onClick={() => {
-                document
-                  .getElementById("featured-categories")
-                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
-                setMobileMenuOpen(false);
-              }}
-              className="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 flex items-center justify-between group transition-colors"
-            >
-              <span className="font-medium text-sm">Featured</span>
-              <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-
-            {Object.keys(categoryGroups).map((groupName) => (
-              <button
-                key={groupName}
-                type="button"
-                onClick={() => {
-                  document
-                    .getElementById(`group-${groupName}`)
-                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 flex items-center justify-between group transition-colors"
-              >
-                <span className="font-medium text-sm">{groupName}</span>
-                <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            ))}
-
-            <button
-              type="button"
-              onClick={() => {
-                document
-                  .getElementById("community-categories")
-                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
-                setMobileMenuOpen(false);
-              }}
-              className="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 flex items-center justify-between group transition-colors mt-2"
-            >
-              <span className="font-medium text-sm">Community Categories</span>
-              <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </nav>
-        </aside>
-
-        {/* Main Content Area */}
-        <main className="flex-1 px-6 py-8 lg:px-12 lg:py-12">
-          {/* Search Bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
+        {/* Content */}
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="mb-8 relative"
+            transition={{ duration: 0.6 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight"
           >
-            <input
-              type="text"
-              placeholder="Search categories..."
-              className="w-full p-4 pl-12 pr-4 border border-gray-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-              🔍
-            </span>
-          </motion.div>
+            Free and engaging presentation templates
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto"
+          >
+            Browse our collection of templates and find the perfect one for you
+          </motion.p>
+        </div>
+      </section>
 
-          {/* Featured Section */}
-          {featuredCategories.length > 0 && (
-            <section id="featured-categories" className="mb-16">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Featured</h2>
-              </div>
+      {/* Main Content Area */}
+      <div className="flex gap-14">
+        {/* Sticky Sidebar */}
+        <Sidebar
+          categoryGroups={categoryGroups}
+          categories={categories}
+          onNavigate={navigate}
+          mobileMenuOpen={mobileMenuOpen}
+          setMobileMenuOpen={setMobileMenuOpen}
+        />
 
-              <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                variants={cardContainerVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                {featuredCategories.slice(0, 2).map((cat) => (
-                  <motion.div
-                    key={cat.id}
-                    variants={cardVariants}
-                    whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(0,0,0,0.12)" }}
-                    onClick={() => navigate(`/difficulty/${cat.id}`)}
-                    className={`${pastelMap[cat.id]} rounded-2xl p-6 cursor-pointer shadow-lg hover:shadow-xl transition-all duration-200`}
-                  >
-                    <div className="aspect-video mb-4 rounded-xl overflow-hidden bg-white/40 flex items-center justify-center">
-                      <img
-                        src={imageMap[cat.id]}
-                        alt={cat.name}
-                        className="w-full h-full object-contain p-4"
-                      />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{cat.name}</h3>
-                    <p className="text-sm text-gray-600 mb-4">Tap to view quizzes</p>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span>Multiple difficulty levels</span>
-                      <span>•</span>
-                      <span>Timed quizzes</span>
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </section>
-          )}
+        {/* Main Content */}
+        <main className="flex-1 min-w-0">
+          <div className="px-6 py-16 lg:px-12 lg:py-16 max-w-7xl">
+            {/* Featured Section */}
+            {featuredCategories.length > 0 && (
+              <section id="featured-categories" className="mb-16">
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8 tracking-tight">
+                  Featured
+                </h2>
 
-          {/* Category Groups */}
-          {Object.keys(categoryGroups).map((groupName, groupIndex) => {
-            const groupIds = categoryGroups[groupName];
-            const groupCat = filtered.filter((c) => groupIds.includes(c.id));
-
-            if (groupCat.length === 0) return null;
-
-            const expanded = expandedGroups[groupName];
-            const shown = expanded ? groupCat : groupCat.slice(0, 3);
-
-            return (
-              <motion.section
-                key={groupName}
-                id={`group-${groupName}`}
-                className="mb-16"
-                variants={groupVariants}
-                initial="hidden"
-                animate="visible"
-                custom={groupIndex}
-              >
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-                    {groupName}
-                  </h2>
-                  {groupCat.length > 3 && (
-                    <button
-                      onClick={() =>
-                        setExpandedGroups({
-                          ...expandedGroups,
-                          [groupName]: !expanded,
-                        })
-                      }
-                      className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
-                    >
-                      {expanded ? "View less" : "View all"}
-                    </button>
-                  )}
-                </div>
-
-                <motion.div
-                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
-                  variants={cardContainerVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  {shown.map((cat) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {featuredCategories.map((cat, index) => (
                     <motion.div
                       key={cat.id}
-                      variants={cardVariants}
-                      whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(0,0,0,0.12)" }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      whileHover={{ scale: 1.05 }}
                       onClick={() => navigate(`/difficulty/${cat.id}`)}
-                      className={`${pastelMap[cat.id]} shadow-md rounded-2xl p-4 transition-all duration-200 hover:shadow-xl cursor-pointer`}
+                      className="rounded-2xl p-4 cursor-pointer drop-shadow-md hover:drop-shadow-lg transition-all duration-300"
+                      style={{ backgroundColor: pastelColorMap[cat.id] || "#e8f1ff" }}
                     >
-                      <img
-                        src={imageMap[cat.id]}
-                        alt={cat.name}
-                        className="w-full h-32 object-contain mb-3 rounded-lg bg-white/60"
-                      />
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      {/* Image container */}
+                      <div className="aspect-video mb-3 rounded-xl overflow-hidden bg-white/60 flex items-center justify-center">
+                        {imageMap[cat.id] ? (
+                          <img
+                            src={imageMap[cat.id]}
+                            alt={cat.name}
+                            className="w-full h-full object-contain p-2"
+                            onError={(e) => {
+                              e.currentTarget.style.display = "none";
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-100/50 flex items-center justify-center">
+                            <span className="text-gray-400 text-xs font-medium">Image</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Category name */}
+                      <h3 className="text-base font-bold text-gray-900 mb-1 leading-tight">
                         {cat.name}
                       </h3>
-                      <p className="text-sm text-gray-600">Tap to view quizzes</p>
+
+                      {/* Subtitle */}
+                      <p className="text-xs text-gray-600 mb-2 font-normal">
+                        Tap to view quizzes
+                      </p>
+
+                      {/* Metadata row */}
+                      <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
+                        <span>Multiple difficulty levels</span>
+                        <span className="text-gray-300">•</span>
+                        <span>Timed quizzes</span>
+                      </div>
                     </motion.div>
                   ))}
-                </motion.div>
-              </motion.section>
-            );
-          })}
+                </div>
+              </section>
+            )}
 
-          {/* Community Categories */}
-          <section id="community-categories" className="mb-16">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-                Community Categories
-              </h2>
-              {customLoading && (
-                <span className="text-sm text-gray-500">Loading...</span>
-              )}
-              {!customLoading && customError && (
-                <span className="text-sm text-red-500">{customError}</span>
-              )}
-            </div>
+            {/* Category Groups */}
+            {Object.keys(categoryGroups).map((groupName, groupIndex) => {
+              const groupIds = categoryGroups[groupName];
+              const groupCat = filtered.filter((c) => groupIds.includes(c.id));
 
-            {localCollections.length === 0 && !customLoading ? (
-              <p className="text-gray-500">
-                {search
-                  ? "No custom categories match your search."
-                  : "No custom categories found yet. Head to the admin panel to add some!"}
-              </p>
-            ) : (
-              localCollections.map((cat, catIndex) => (
-                <motion.div
-                  key={cat.id}
-                  className="mb-12"
-                  variants={groupVariants}
-                  initial="hidden"
-                  animate="visible"
-                  custom={catIndex + 5}
+              if (groupCat.length === 0) return null;
+
+              const expanded = expandedGroups[groupName];
+              const shown = expanded ? groupCat : groupCat.slice(0, 4);
+
+              return (
+                <motion.section
+                  key={groupName}
+                  id={`group-${groupName}`}
+                  className="mb-16"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    ease: "easeOut",
+                    delay: 0.05 * groupIndex,
+                  }}
                 >
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl md:text-2xl font-semibold text-gray-900">
-                      {cat.name}
-                    </h3>
+                  <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+                      {groupName}
+                    </h2>
+                    {groupCat.length > 4 && (
+                      <button
+                        onClick={() =>
+                          setExpandedGroups({
+                            ...expandedGroups,
+                            [groupName]: !expanded,
+                          })
+                        }
+                        className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors px-3 py-1.5 rounded-lg hover:bg-blue-50"
+                      >
+                        {expanded ? "View less" : "View all"}
+                      </button>
+                    )}
                   </div>
 
-                  {cat.subcategories.length === 0 ? (
-                    <p className="text-gray-500">
-                      No subcategories have been created for this category yet.
-                    </p>
-                  ) : (
-                    <motion.div
-                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
-                      variants={cardContainerVariants}
-                      initial="hidden"
-                      animate="visible"
-                    >
-                      {cat.subcategories.map((sub) => (
-                        <motion.div
-                          key={sub.id}
-                          variants={cardVariants}
-                          whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(0,0,0,0.12)" }}
-                          onClick={() =>
-                            navigate(`/difficulty/local-${sub.id}`, {
-                              state: {
-                                customMeta: {
-                                  categoryName: cat.name,
-                                  subcategoryName: sub.name,
-                                  subCategoryId: sub.id,
-                                  categoryId: sub.categoryId,
-                                },
-                              },
-                            })
-                          }
-                          className="shadow-md rounded-2xl p-4 border border-gray-100 cursor-pointer transition-all duration-200 hover:shadow-xl"
-                          style={{ backgroundColor: sub.color || "#F9FAFB" }}
-                        >
-                          {sub.imageUrl ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {shown.map((cat, index) => (
+                      <motion.div
+                        key={cat.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: index * 0.05 }}
+                        whileHover={{ scale: 1.05 }}
+                        onClick={() => navigate(`/difficulty/${cat.id}`)}
+                        className="rounded-2xl p-4 cursor-pointer drop-shadow-md hover:drop-shadow-lg transition-all duration-300"
+                        style={{ backgroundColor: pastelColorMap[cat.id] || "#e8f1ff" }}
+                      >
+                        {/* Image container */}
+                        <div className="aspect-video mb-3 rounded-xl overflow-hidden bg-white/60 flex items-center justify-center">
+                          {imageMap[cat.id] ? (
                             <img
-                              src={normalizeImageUrl(sub.imageUrl)}
-                              alt={sub.name}
-                              className="w-full h-32 object-cover mb-3 rounded-lg"
-                              loading="lazy"
+                              src={imageMap[cat.id]}
+                              alt={cat.name}
+                              className="w-full h-full object-contain p-2"
                               onError={(e) => {
                                 e.currentTarget.style.display = "none";
                               }}
                             />
-                          ) : null}
+                          ) : (
+                            <div className="w-full h-full bg-gray-100/50 flex items-center justify-center">
+                              <span className="text-gray-400 text-xs font-medium">Image</span>
+                            </div>
+                          )}
+                        </div>
 
-                          <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                            {sub.name}
-                          </h4>
-                          <p className="text-sm text-gray-600">Added by your team</p>
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  )}
-                </motion.div>
-              ))
-            )}
-          </section>
+                        {/* Category name */}
+                        <h3 className="text-base font-bold text-gray-900 mb-1 leading-tight">
+                          {cat.name}
+                        </h3>
+
+                        {/* Subtitle */}
+                        <p className="text-xs text-gray-600 mb-2 font-normal">
+                          Tap to view quizzes
+                        </p>
+
+                        {/* Metadata row */}
+                        <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
+                          <span>Multiple difficulty levels</span>
+                          <span className="text-gray-300">•</span>
+                          <span>Timed quizzes</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.section>
+              );
+            })}
+
+            {/* Community Categories */}
+            <section id="community-categories" className="mb-16">
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+                  Community Categories
+                </h2>
+                {customLoading && (
+                  <span className="text-sm text-gray-500">Loading...</span>
+                )}
+                {!customLoading && customError && (
+                  <span className="text-sm text-red-500">{customError}</span>
+                )}
+              </div>
+
+              {localCollections.length === 0 && !customLoading ? (
+                <p className="text-gray-500 text-base">
+                  No custom categories found yet. Head to the admin panel to add some!
+                </p>
+              ) : (
+                localCollections.map((cat, catIndex) => (
+                  <motion.div
+                    key={cat.id}
+                    className="mb-12"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.4,
+                      ease: "easeOut",
+                      delay: 0.05 * (catIndex + 5),
+                    }}
+                  >
+                    <div className="flex justify-between items-center mb-8">
+                      <h3 className="text-2xl md:text-3xl font-semibold text-gray-900 tracking-tight">
+                        {cat.name}
+                      </h3>
+                    </div>
+
+                    {cat.subcategories.length === 0 ? (
+                      <p className="text-gray-500 text-base">
+                        No subcategories have been created for this category yet.
+                      </p>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {cat.subcategories.map((sub, index) => (
+                          <motion.div
+                            key={sub.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: index * 0.05 }}
+                            whileHover={{ scale: 1.05 }}
+                            onClick={() =>
+                              navigate(`/difficulty/local-${sub.id}`, {
+                                state: {
+                                  customMeta: {
+                                    categoryName: cat.name,
+                                    subcategoryName: sub.name,
+                                    subCategoryId: sub.id,
+                                    categoryId: sub.categoryId,
+                                  },
+                                },
+                              })
+                            }
+                            className="rounded-2xl p-4 cursor-pointer drop-shadow-md hover:drop-shadow-lg transition-all duration-300"
+                            style={{ backgroundColor: sub.color || "#F9FAFB" }}
+                          >
+                            {sub.imageUrl ? (
+                              <div className="aspect-video mb-3 rounded-xl overflow-hidden bg-white/60 flex items-center justify-center">
+                                <img
+                                  src={normalizeImageUrl(sub.imageUrl)}
+                                  alt={sub.name}
+                                  className="w-full h-full object-contain p-2"
+                                  loading="lazy"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = "none";
+                                  }}
+                                />
+                              </div>
+                            ) : (
+                              <div className="aspect-video mb-3 rounded-xl bg-gray-100/50 flex items-center justify-center">
+                                <span className="text-gray-400 text-xs font-medium">Image</span>
+                              </div>
+                            )}
+
+                            <h4 className="text-base font-bold text-gray-900 mb-1 leading-tight">
+                              {sub.name}
+                            </h4>
+                            <p className="text-xs text-gray-600 mb-2 font-normal">
+                              Tap to view quizzes
+                            </p>
+                            <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
+                              <span>Multiple difficulty levels</span>
+                              <span className="text-gray-300">•</span>
+                              <span>Timed quizzes</span>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+                  </motion.div>
+                ))
+              )}
+            </section>
+          </div>
         </main>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
