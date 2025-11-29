@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 /* -------------------- Helpers -------------------- */
 
@@ -662,169 +663,308 @@ if (finished) {
     return "bg-gray-100 border-gray-200";
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const optionVariants = {
+    hidden: { opacity: 0, x: -30, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24,
+      },
+    },
+  };
+
+  const questionVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
-
-        {/* QUESTION AREA */}
-        <div className="lg:col-span-3 p-6 bg-white rounded-xl border">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <div className="text-sm text-blue-700 font-semibold mb-1">Question {index + 1} of {total}</div>
-              <div className="text-xs text-gray-500">
-                Category:{" "}
-                <span className="font-medium">{topicLabel}</span>{" "}
-                • Difficulty:{" "}
-                <span className="font-medium">{level}</span>
-              </div>
-            </div>
-
-            <div style={{ minWidth: 180 }} className="hidden lg:flex flex-col items-end">
-              <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
-                <div className="h-2 bg-blue-600" style={{ width: `${progressPercent}%` }} />
-              </div>
-              <div className="text-xs text-gray-500">Progress</div>
-            </div>
-          </div>
-
-          <div className="flex items-start justify-between mb-6">
-            <h2 className="text-xl font-semibold max-w-[70%]">{decodeHTML(q.question)}</h2>
-
-            <div className="flex flex-col items-end space-y-3">
-              <button
-                onClick={() => toggleFlag(index)}
-                className={`p-2 rounded-lg border shadow-sm ${flagged[index] ? "bg-amber-100 border-amber-300" : "bg-white border-gray-200"}`}
-                title={flagged[index] ? "Unflag question" : "Flag question"}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${flagged[index] ? "text-amber-600" : "text-gray-400"}`} fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M5 3a2 2 0 00-2 2v12l7-4 7 4V5a2 2 0 00-2-2H5z" />
-                </svg>
-              </button>
-
-              <div className="text-xs text-gray-500">{timeOver ? "Time's up" : `Time left: ${timeLeft}s`}</div>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            {options.map((opt, iOpt) => {
-              const isSelected = selected === opt;
-              const base = "flex items-center gap-4 p-4 border rounded-lg transition";
-              const style = isSelected ? "bg-green-100 border-green-300" : "bg-white hover:bg-gray-50 border-gray-200";
-
-              return (
-                <button
-                  key={iOpt}
-                  onClick={() => selectOption(opt)}
-                  disabled={timeOver}
-                  className={`${base} ${style} w-full text-left`}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          {/* LEFT SIDEBAR - Timer & Navigation */}
+          <aside className="lg:col-span-3 space-y-6">
+            {/* Timer - Prominent, no borders */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+              className="bg-white rounded-3xl shadow-lg p-6"
+            >
+              <div className="flex flex-col items-center">
+                <motion.div
+                  key={timeLeft}
+                  initial={{ scale: 1.2 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-6xl font-bold mb-2"
+                  style={{
+                    color: timeLeft <= 10 ? "#ef4444" : timeLeft <= 20 ? "#f59e0b" : "#3b82f6",
+                  }}
                 >
-                  <div className={`flex items-center justify-center h-5 w-5 rounded-full border ${isSelected ? "bg-green-600 border-green-600" : "bg-white border-gray-300"}`}>
-                    {isSelected ? <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="3" /></svg> : null}
-                  </div>
+                  {timeLeft}
+                </motion.div>
+                <div className="text-sm text-gray-500 font-medium">seconds</div>
+                
+                {/* Progress bar */}
+                <div className="w-full mt-4 h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: "100%" }}
+                    animate={{ width: `${(timeLeft / TOTAL_TIME) * 100}%` }}
+                    transition={{ duration: 1, ease: "linear" }}
+                    className="h-full rounded-full"
+                    style={{
+                      background: timeLeft <= 10 
+                        ? "linear-gradient(90deg, #ef4444, #dc2626)" 
+                        : timeLeft <= 20 
+                        ? "linear-gradient(90deg, #f59e0b, #d97706)" 
+                        : "linear-gradient(90deg, #3b82f6, #2563eb)",
+                    }}
+                  />
+                </div>
 
-                  <div className="text-sm">{decodeHTML(opt)}</div>
+                <button
+                  onClick={() => setIsPaused((p) => !p)}
+                  className="mt-4 px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                >
+                  {isPaused ? "▶ Resume" : "⏸ Pause"}
                 </button>
-              );
-            })}
-          </div>
+              </div>
+            </motion.div>
 
-          <div className="flex items-center justify-between mt-6">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handlePrev}
-                disabled={index === 0}
-                className={`px-4 py-2 rounded-lg border ${index === 0 ? "text-gray-400 border-gray-200 bg-gray-50" : "bg-white hover:bg-gray-50"}`}
+            {/* Navigation Numbers */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="bg-white rounded-3xl shadow-lg p-6"
+            >
+              <h3 className="text-sm font-semibold text-gray-700 mb-4">Question Navigation</h3>
+              <div className="grid grid-cols-5 gap-2">
+                {questions.map((_, i) => (
+                  <motion.button
+                    key={i}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => goToQuestion(i)}
+                    className={`h-12 flex items-center justify-center rounded-xl font-semibold text-sm transition-all ${
+                      i === index
+                        ? "bg-blue-600 text-white shadow-lg scale-110"
+                        : getPaletteClass(i)
+                    }`}
+                    title={`Go to question ${i + 1}`}
+                  >
+                    {i + 1}
+                  </motion.button>
+                ))}
+              </div>
+
+              {/* Stats */}
+              <div className="mt-6 space-y-2 pt-6 border-t border-gray-100">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Answered</span>
+                  <span className="font-semibold text-green-600">{answeredCount}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Unanswered</span>
+                  <span className="font-semibold">{unansweredCount}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Flagged</span>
+                  <span className="font-semibold text-amber-600">{flaggedCount}</span>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  if (window.confirm("Submit quiz now?")) handleSubmit();
+                }}
+                className="w-full mt-6 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-shadow"
               >
-                ← Previous
-              </button>
+                Submit Quiz
+              </motion.button>
+            </motion.div>
+          </aside>
 
-              <button
-                onClick={() => { if (!nextEnabled) return; handleNext(); }}
-                className={`px-4 py-2 rounded-lg border ${nextEnabled ? "bg-blue-600 text-white hover:bg-blue-700" : "text-gray-400 border-gray-200 bg-gray-50"}`}
+          {/* RIGHT SIDE - Question Area */}
+          <div className="lg:col-span-9">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.4 }}
+              className="bg-white rounded-3xl shadow-xl p-8 min-h-[600px]"
+            >
+              {/* Question Header */}
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-sm font-semibold text-blue-600"
+                  >
+                    Question {index + 1} of {total}
+                  </motion.div>
+                  <motion.button
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => toggleFlag(index)}
+                    className={`p-2 rounded-xl transition-all ${
+                      flagged[index] 
+                        ? "bg-amber-100 text-amber-600" 
+                        : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                    }`}
+                    title={flagged[index] ? "Unflag question" : "Flag question"}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M5 3a2 2 0 00-2 2v12l7-4 7 4V5a2 2 0 00-2-2H5z" />
+                    </svg>
+                  </motion.button>
+                </div>
+                
+                <div className="text-xs text-gray-500 mb-6">
+                  <span className="font-medium">{topicLabel}</span> • <span className="font-medium capitalize">{level}</span>
+                </div>
+
+                {/* Question Text */}
+                <motion.h2
+                  variants={questionVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="text-3xl font-bold text-gray-800 leading-relaxed mb-8"
+                >
+                  {decodeHTML(q.question)}
+                </motion.h2>
+              </div>
+
+              {/* Answer Options - Staggered Animation */}
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-4 mb-8"
               >
-                {index + 1 === total ? "Submit Quiz" : "Next →"}
-              </button>
-            </div>
+                {options.map((opt, iOpt) => {
+                  const isSelected = selected === opt;
+                  return (
+                    <motion.button
+                      key={iOpt}
+                      variants={optionVariants}
+                      whileHover={{ scale: 1.02, x: 5 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => selectOption(opt)}
+                      disabled={timeOver}
+                      className={`w-full flex items-center gap-4 p-5 rounded-2xl border-2 transition-all text-left ${
+                        isSelected
+                          ? "bg-gradient-to-r from-green-50 to-emerald-50 border-green-400 shadow-lg"
+                          : "bg-white border-gray-200 hover:border-blue-300 hover:shadow-md"
+                      } ${timeOver ? "opacity-60 cursor-not-allowed" : ""}`}
+                    >
+                      <motion.div
+                        className={`flex items-center justify-center h-8 w-8 rounded-full font-bold text-sm ${
+                          isSelected
+                            ? "bg-green-600 text-white"
+                            : "bg-gray-100 text-gray-600 border-2 border-gray-300"
+                        }`}
+                        whileHover={{ scale: 1.1 }}
+                      >
+                        {optionLetters[iOpt]}
+                      </motion.div>
+                      <div className="flex-1 text-lg text-gray-700 font-medium">
+                        {decodeHTML(opt)}
+                      </div>
+                      {isSelected && (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="text-green-600"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </motion.div>
+                      )}
+                    </motion.button>
+                  );
+                })}
+              </motion.div>
 
-            <div className="flex items-center gap-4 text-sm text-gray-600">
-              <div className="flex items-center gap-2"><span className="w-3 h-3 bg-green-200 rounded-sm border border-green-300" /> Answered</div>
-              <div className="flex items-center gap-2"><span className="w-3 h-3 bg-gray-100 rounded-sm border border-gray-200" /> Unanswered</div>
-              <div className="flex items-center gap-2"><span className="w-3 h-3 bg-amber-200 rounded-sm border border-amber-300" /> Flagged</div>
-            </div>
+              {/* Navigation Buttons */}
+              <div className="flex items-center justify-between pt-6 border-t border-gray-100">
+                <motion.button
+                  whileHover={{ scale: 1.05, x: -3 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handlePrev}
+                  disabled={index === 0}
+                  className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                    index === 0
+                      ? "text-gray-400 bg-gray-50 cursor-not-allowed"
+                      : "text-gray-700 bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50"
+                  }`}
+                >
+                  ← Previous
+                </motion.button>
+
+                <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 bg-green-200 rounded-full border border-green-300" />
+                    <span>Answered</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 bg-gray-100 rounded-full border border-gray-200" />
+                    <span>Unanswered</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 bg-amber-200 rounded-full border border-amber-300" />
+                    <span>Flagged</span>
+                  </div>
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.05, x: 3 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => { if (!nextEnabled) return; handleNext(); }}
+                  className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                    nextEnabled
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-xl"
+                      : "text-gray-400 bg-gray-50 cursor-not-allowed"
+                  }`}
+                >
+                  {index + 1 === total ? "Submit Quiz" : "Next →"}
+                </motion.button>
+              </div>
+            </motion.div>
           </div>
         </div>
-
-        {/* RIGHT SIDE PANEL */}
-        <aside className="p-4 bg-white rounded-xl border shadow-sm">
-          <div className="flex flex-col items-center mb-6">
-            <div className="relative">
-              <svg width="80" height="80" viewBox="0 0 100 100" className="transform -rotate-90">
-                <circle cx="50" cy="50" r="44" stroke="#e6e9ee" strokeWidth="8" fill="none" />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="44"
-                  stroke="#2563eb"
-                  strokeWidth="8"
-                  strokeDasharray={2 * Math.PI * 44}
-                  strokeDashoffset={(1 - timeLeft / TOTAL_TIME) * 2 * Math.PI * 44}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center text-lg font-semibold">
-                {timeLeft}s
-              </div>
-            </div>
-
-            <div className="text-sm text-gray-600 mt-2">Time remaining</div>
-          </div>
-
-          <div className="mb-4">
-            <div className="flex justify-between text-sm text-gray-600 mb-1">
-              <div>Answered</div>
-              <div className="font-semibold text-green-600">{answeredCount}</div>
-            </div>
-            <div className="flex justify-between text-sm text-gray-600 mb-1">
-              <div>Unanswered</div>
-              <div className="font-semibold">{unansweredCount}</div>
-            </div>
-            <div className="flex justify-between text-sm text-gray-600">
-              <div>Flagged</div>
-              <div className="font-semibold text-amber-600">{flaggedCount}</div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-5 gap-3">
-            {questions.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goToQuestion(i)}
-                className={`h-10 flex items-center justify-center rounded-md border ${getPaletteClass(i)} text-sm`}
-                title={`Go to question ${i + 1}`}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-4 flex flex-col gap-2">
-            <button
-              onClick={() => {
-                if (window.confirm("Submit quiz now?")) handleSubmit();
-              }}
-              className="w-full px-3 py-2 bg-indigo-600 text-white rounded-lg"
-            >
-              Submit Quiz
-            </button>
-
-            <button
-              onClick={() => setIsPaused((p) => !p)}
-              className="w-full px-3 py-2 border rounded-lg"
-            >
-              {isPaused ? "Resume Timer" : "Pause Timer"}
-            </button>
-          </div>
-        </aside>
       </div>
     </div>
   );

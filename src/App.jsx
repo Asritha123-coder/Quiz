@@ -6,13 +6,13 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
-import Quiz from "./pages/quiz";
+import Quiz from "./pages/Quiz";
 import Category from "./pages/Category";
 import Difficulty from "./pages/Difficulty";
 import Leaderboard from "./pages/Leaderboard";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
-
+import QuizLoader from "./pages/QuizLoader";
 import AdminLayout from "./admin/AdminLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -45,6 +45,7 @@ function AppWrapper() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/Category" element={<Category />} />
         <Route path="/Difficulty/:id" element={<Difficulty />} />
+        <Route path="/quiz-loading" element={<QuizLoader />} />
         <Route path="/quiz/:id/:level" element={<Quiz />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/about" element={<About />} />
